@@ -11,51 +11,55 @@ from AppControl import app, boardList
 import game
 
 
-htmlEls = [
-    html.H1(
-        'Select a Board',
-        id='mainMenu',
-        style={'textAlign': 'center'}
-    ),
-]
+def getMainMenuLayout():
+    htmlEls = [
+        html.H1(
+            'Select a Board',
+            id='mainMenu',
+            style={'textAlign': 'center'}
+        ),
+    ]
 
-# Add board as option on main menu
-for board in boardList:
-    graph = board.getGraph()
-    cytoscapeEdges = graph.getCytoscapeGraphEdges()
-    htmlEls.append(    
-        html.Div(
-            [
-                html.H2(
-                    board.boardName,
-                    id=board.boardName+'Name',
-                    style={'textAlign': 'center'}
-                ),
-                cyto.Cytoscape(
-                    id=board.boardName+'Preview',
-                    layout={'name': 'preset'},
-                    style={'width': '100%', 'height': '200px'},
-                    stylesheet=board.getCytoscapeStylesheet(),
-                    elements=board.getCytoscapeNodes() + cytoscapeEdges,
-                    userZoomingEnabled=False,
-                    userPanningEnabled=False
-                ),
-            ],
-            id=board.boardName,
-            style={ 'border': '2px solid gray', 'margin': '5px' }
+    # Add board as option on main menu
+    for board in boardList:
+        graph = board.getGraph()
+        cytoscapeEdges = graph.getCytoscapeGraphEdges()
+        htmlEls.append(
+            html.Div(
+                [
+                    html.H2(
+                        board.boardName,
+                        id=board.boardName+'Name',
+                        style={'textAlign': 'center'}
+                    ),
+                    cyto.Cytoscape(
+                        id=board.boardName+'Preview',
+                        layout={'name': 'preset'},
+                        style={'width': '100%', 'height': '200px'},
+                        stylesheet=board.getCytoscapeStylesheet(),
+                        elements=board.getCytoscapeNodes() + cytoscapeEdges,
+                        userZoomingEnabled=False,
+                        userPanningEnabled=False
+                    ),
+                ],
+                id=board.boardName,
+                style={'border': '2px solid gray', 'margin': '5px'}
+            )
         )
-    )
+
+    return htmlEls
+
 
 # Set layout to main menu
 app.layout = html.Div(
     html.Div(
-        htmlEls,
+        getMainMenuLayout(),
         id='page-content',
-        style={ 'fontFamily': 'Courier New' }
+        style={'fontFamily': 'Courier New'}
     )
 )
 
-# Triggered when main menu option is clicked
+# Triggered when a main menu option is clicked
 # Sets page-content to selected game board
 @app.callback(
     Output('page-content', 'children'),
