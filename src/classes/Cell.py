@@ -3,6 +3,11 @@ class Cell:
     def __init__(self, nodes: list=None, markedEdges: list=None):
         self.nodes = nodes if nodes != None else []
         self.markedEdges = markedEdges if markedEdges != None else []
+
+        for idx, n in enumerate(self.nodes):
+            n.addAdjacentNode(self.nodes[idx-1])
+            n.addAdjacentNode(self.nodes[(idx+1) % len(self.nodes)])
+
         return
 
     def getEdges(self) -> list:

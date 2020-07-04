@@ -22,6 +22,9 @@ class Graph:
         else:
             raise Exception('Tried to mark an edge that is already marked in graph')
 
+        edge[0].addOutboundNode(edge[1])
+        edge[1].addInboundNode(edge[0])
+
         for c in self.cells:
             if [edge[0], edge[1]] in c.getEdges() or [edge[1], edge[0]] in c.getEdges():
                 c.addMarkedEdge(edge)
@@ -64,6 +67,10 @@ class Graph:
 
     def removeAllMarkedEdges(self):
         self.directedEdges = []
+
+        for n in self.nodes:
+            n.removeAllDirectedNodes()
+
         for c in self.cells:
             c.removeAllMarkedEdges()
         return

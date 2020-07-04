@@ -103,9 +103,9 @@ def handleNodeClick(node, nClicks, elements, currPlayerMove):
 
     # If we get here, an edge was selected to be marked    
     cytoEdge = (GameStateControl.selectedNode, node)
-    node0 = list(filter(lambda x: str(x.id) == str(cytoEdge[0]['id']), AppControl.graph.nodes))[0]
-    node1 = list(filter(lambda x: str(x.id) == str(cytoEdge[1]['id']), AppControl.graph.nodes))[0]
-    edge = (node0, node1)
+    sourceNode = list(filter(lambda x: str(x.id) == str(cytoEdge[0]['id']), AppControl.graph.nodes))[0]
+    targetNode = list(filter(lambda x: str(x.id) == str(cytoEdge[1]['id']), AppControl.graph.nodes))[0]
+    edge = (sourceNode, targetNode)
     
     nodes = AppControl.CHOSEN_GRAPH.getCytoscapeNodes()
 
@@ -116,18 +116,13 @@ def handleNodeClick(node, nClicks, elements, currPlayerMove):
 
     GameStateControl.selectedNode = None
 
-
-
     # Return without adding a new edge if the edge was already marked or was not an actual edge in our graph
     if AppControl.graph.isEdgeMarked(edge) or not AppControl.graph.isUnmarkedEdgeInGraph(edge):
         return nodes+edges
 
-
-
-    # @TODO
-    # Handle sinks/sources
-
-
+    # Return without adding a new edge if the edge would create a sink or source
+    if sourceNode.wouldOutboundNodeCreateSource(targetNode) or targetNode.wouldInboundNodeCreateSink(sourceNode):
+        return nodes + edges
 
     # If we get here, a valid edge was marked
     AppControl.graph.addDirectedEdge(edge)
