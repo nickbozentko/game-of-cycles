@@ -16,7 +16,10 @@ def getMainMenuLayout():
         html.H1(
             'Select a Board',
             id='mainMenu',
-            style={'textAlign': 'center'}
+            style={
+                'textAlign': 'center',
+                'display': 'block' if AppControl.page == 'HOME' else 'hidden'
+            }
         ),
     ]
 
@@ -49,29 +52,47 @@ def getMainMenuLayout():
 
     return htmlEls
 
+def getPages():
+    return [
+        html.Div(
+            getMainMenuLayout(),
+            id='main-page',
+            style={ 'display': 'block' if AppControl.page == 'HOME' else 'none' }
+        ),
+        html.Div(
+            game.renderCurrentBoard(),
+            id='game-page',
+            style={ 'display': 'block' if AppControl.page == 'GAME' else 'none' }
+        )
+    ]
 
 # Set layout to main menu
 app.layout = html.Div(
-    html.Div(
-        getMainMenuLayout(),
-        id='page-content',
-        style={'fontFamily': 'Courier New'}
-    )
+    getPages(),
+    id='root',
+    style={'fontFamily': 'Courier New'}
 )
 
 # Triggered when a main menu option is clicked
 # Sets page-content to selected game board
 @app.callback(
-    Output('page-content', 'children'),
-    [Input(board.boardName, 'n_clicks') for board in boardList]
+    Output('root', 'children'),
+    [Input(board.boardName, 'n_clicks') for board in boardList] + [Input('mainMenuBtn', 'n_clicks')]
 )
-def handleBoardChosen(*args):
+def handleChangePage(*args):
     trigger = callback_context.triggered[0]['prop_id']
     if trigger == '.':
         return no_update
+
+    if(trigger == 'mainMenuBtn.n_clicks'):
+        AppControl.page = 'HOME'
+        return getPages()
+
     boardName = trigger.split('.')[0]
     AppControl.chosenBoardName = boardName
-    return game.renderCurrentBoard()
+    AppControl.page = 'GAME'
+    return getPages()
+
 
 
 # Start dev server

@@ -34,11 +34,14 @@ def renderCurrentBoard():
         cyto.Cytoscape(
             id='myGraph',
             layout={'name': 'preset'},
-            style={'width': '100%', 'height': '500px'},
+            style={
+                'width': '100%', 
+                'height': '500px',
+            },
             stylesheet=AppControl.CHOSEN_GRAPH.getCytoscapeStylesheet(),
             elements=AppControl.CHOSEN_GRAPH.getCytoscapeNodes() + cytoscapeEdges,
             userZoomingEnabled=False,
-            userPanningEnabled=False
+            userPanningEnabled=False,
         ),
         html.Div(
             [

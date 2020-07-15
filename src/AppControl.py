@@ -5,6 +5,8 @@ import boards.Triforce as Triforce
 import boards.TripleTriangleWithDeathDiamond as TripleTriangleWithDeathDiamond
 import boards.Square as Square
 
+page = 'HOME'
+
 # Initialize boardList and boardMap
 boardList = [TripleTriangleWithDeathDiamond, Triforce, Square]
 boardMap = {}
