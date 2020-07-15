@@ -197,13 +197,22 @@ def updatePlayerMove(graphEls):
 )
 def updateWinnerText(graphEls, playerMove):
 
-    # @TODO
-    # Handle the case where the game ends because there are no markable edges left
-
-    gameOver = AppControl.graph.doesContainCycle()
+    gameOver = AppControl.graph.doesContainCycle() or not AppControl.graph.doesHaveMarkableEdge()
     if(not gameOver):
-        return ['', {'display': 'none'}, {'textAlign': 'center'}]
+        return [
+            '', 
+            {'display': 'none'}, 
+            {'textAlign': 'center'}
+        ]
 
     GameStateControl.gameIsOver = True
     winnerNum = '2' if playerMove.split(' ')[1] == '1' else '1'
-    return ['Player ' + winnerNum + ' Wins', {'display': 'block', 'textAlign': 'center'}, {'display': 'none'}]
+    return [
+        'Player ' + winnerNum + ' Wins', 
+        {
+            'display': 'block', 
+            'textAlign': 'center', 
+            'color': 'red'
+        }, 
+        {'display': 'none'}
+    ]

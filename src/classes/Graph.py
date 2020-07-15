@@ -56,7 +56,7 @@ class Graph:
                     'type': 'directed',
                     'source': int(e[0].id),
                     'target': int(e[1].id)
-                }
+                }   
             })
 
         for e in self.undirectedEdges:
@@ -74,3 +74,26 @@ class Graph:
         for c in self.cells:
             c.removeAllMarkedEdges()
         return
+
+    def doesHaveMarkableEdge(self) -> bool:
+        unmarkedEdges = [ set([e[0], e[1]]) for e in self.undirectedEdges ]
+        markedEdges = [ set([e[0], e[1]]) for e in self.directedEdges ]
+        for edge in markedEdges:
+            unmarkedEdges.remove(edge)
+        for idx, edge in enumerate(unmarkedEdges):
+            unmarkedEdges[idx] = list(edge)
+            print(unmarkedEdges[idx])
+
+        for edge in unmarkedEdges:
+            if \
+                ( \
+                    not edge[0].wouldInboundNodeCreateSink(edge[1]) \
+                    and not edge[1].wouldOutboundNodeCreateSource(edge[0]) \
+                ) \
+                or \
+                ( \
+                    not edge[1].wouldInboundNodeCreateSink(edge[0]) \
+                    and not edge[0].wouldOutboundNodeCreateSource(edge[1]) \
+                ):
+                    return True
+        return False

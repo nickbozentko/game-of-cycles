@@ -3,9 +3,10 @@ import dash
 # Import our boards
 import boards.Triforce as Triforce
 import boards.TripleTriangleWithDeathDiamond as TripleTriangleWithDeathDiamond
+import boards.Square as Square
 
 # Initialize boardList and boardMap
-boardList = [TripleTriangleWithDeathDiamond, Triforce]
+boardList = [TripleTriangleWithDeathDiamond, Triforce, Square]
 boardMap = {}
 for board in boardList:
     boardMap[board.getBoardName()] = board
