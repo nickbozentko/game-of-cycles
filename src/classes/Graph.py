@@ -82,7 +82,6 @@ class Graph:
             unmarkedEdges.remove(edge)
         for idx, edge in enumerate(unmarkedEdges):
             unmarkedEdges[idx] = list(edge)
-            print(unmarkedEdges[idx])
 
         for edge in unmarkedEdges:
             if \

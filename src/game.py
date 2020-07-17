@@ -106,7 +106,7 @@ def handleNodeClick(node, nClicks, elements, currPlayerMove):
     """
 
     # Handle reset click, as described above
-    if nClicks != GameStateControl.resetClicks:
+    if nClicks != GameStateControl.resetClicks and nClicks != 0:
         GameStateControl.resetClicks = nClicks
         GameStateControl.selectedNode = None
         GameStateControl.playerMove = 1
@@ -219,3 +219,13 @@ def updateWinnerText(graphEls, playerMove):
         }, 
         {'display': 'none'}
     ]
+
+# Back to main menu
+@app.callback(
+    [Output('url', 'pathname')],
+    [Input('mainMenuBtn', 'n_clicks')]
+)
+def backToMainMenu(num):
+    if num == 0:
+        return no_update
+    return ['/']

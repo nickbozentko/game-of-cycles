@@ -5,6 +5,7 @@ import dash_html_components as html
 import dash_cytoscape as cyto
 from dash.dependencies import Input, Output, State
 from dash import callback_context, no_update
+import re
 
 import AppControl
 from AppControl import app, boardList
@@ -14,7 +15,20 @@ import game
 def getMainMenuLayout():
     htmlEls = [
         html.H1(
-            'Select a Board',
+            [
+                'Select a Board',
+                html.Button(
+                    '+',
+                    style={
+                        'backgroundColor': 'blue',
+                        'color': 'white',
+                        'border': 'none',
+                        'height': '30px',
+                        'width': '30px',
+                        'margin-left': '80px'
+                    }
+                )
+            ],
             id='mainMenu',
             style={
                 'textAlign': 'center',
@@ -28,70 +42,70 @@ def getMainMenuLayout():
         graph = board.getGraph()
         cytoscapeEdges = graph.getCytoscapeGraphEdges()
         htmlEls.append(
-            html.Div(
-                [
-                    html.H2(
-                        board.boardName,
-                        id=board.boardName+'Name',
-                        style={'textAlign': 'center'}
-                    ),
-                    cyto.Cytoscape(
-                        id=board.boardName+'Preview',
-                        layout={'name': 'preset'},
-                        style={'width': '100%', 'height': '200px'},
-                        stylesheet=board.getCytoscapeStylesheet(),
-                        elements=board.getCytoscapeNodes() + cytoscapeEdges,
-                        userZoomingEnabled=False,
-                        userPanningEnabled=False
-                    ),
-                ],
-                id=board.boardName,
-                style={'border': '2px solid gray', 'margin': '5px'}
-            )
+            dcc.Link(
+                html.Div(
+                    [
+                        html.H2(
+                            board.boardName,
+                            id=board.boardName+'Name',
+                            style={'textAlign': 'center'}
+                        ),
+                        cyto.Cytoscape(
+                            id=board.boardName+'Preview',
+                            layout={'name': 'preset'},
+                            style={'width': '100%', 'height': '200px'},
+                            stylesheet=board.getCytoscapeStylesheet(),
+                            elements=board.getCytoscapeNodes() + cytoscapeEdges,
+                            userZoomingEnabled=False,
+                            userPanningEnabled=False
+                        ),
+                    ],
+                    id=board.boardName,
+                    style={'border': '2px solid gray', 'margin': '5px'}
+                ),
+                href="/game/"+board.boardName
+            ),
         )
 
     return htmlEls
 
-def getPages():
-    return [
+# Root layout
+app.layout = html.Div([
+        dcc.Location(id="url", refresh=False),
         html.Div(
-            getMainMenuLayout(),
-            id='main-page',
-            style={ 'display': 'block' if AppControl.page == 'HOME' else 'none' }
-        ),
-        html.Div(
-            game.renderCurrentBoard(),
-            id='game-page',
-            style={ 'display': 'block' if AppControl.page == 'GAME' else 'none' }
+            id="page-content"
         )
-    ]
-
-# Set layout to main menu
-app.layout = html.Div(
-    getPages(),
+    ],
     id='root',
     style={'fontFamily': 'Courier New'}
 )
 
-# Triggered when a main menu option is clicked
-# Sets page-content to selected game board
+# Page Navigation
 @app.callback(
-    Output('root', 'children'),
-    [Input(board.boardName, 'n_clicks') for board in boardList] + [Input('mainMenuBtn', 'n_clicks')]
+    [Output('page-content', 'children')],
+    [Input('url', 'pathname')]
 )
-def handleChangePage(*args):
-    trigger = callback_context.triggered[0]['prop_id']
-    if trigger == '.':
-        return no_update
+def displayPage(url):
+    gamePattern = re.compile("/game/\w+")
 
-    if(trigger == 'mainMenuBtn.n_clicks'):
-        AppControl.page = 'HOME'
-        return getPages()
+    if url == '/':
+        return [html.Div(
+            getMainMenuLayout(),
+            id='main-page',
+        )]
+    elif gamePattern.match(url):
+        boardName = url.split('/')[2]
+        AppControl.chosenBoardName = boardName
 
-    boardName = trigger.split('.')[0]
-    AppControl.chosenBoardName = boardName
-    AppControl.page = 'GAME'
-    return getPages()
+        return [html.Div(
+            game.renderCurrentBoard(),
+            id='game-page',
+        )]
+
+    return [html.Div(
+        getMainMenuLayout(),
+        id='main-page',
+    )]
 
 
 
