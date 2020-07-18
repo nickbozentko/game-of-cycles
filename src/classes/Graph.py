@@ -61,7 +61,25 @@ class Graph:
 
         for e in self.undirectedEdges:
             if not self.isEdgeMarked(e):
-                edges.append({ 'data': { 'type': 'undirected', 'source': int(e[0].id), 'target': int(e[1].id) } })
+
+                isMarkable = \
+                    ( \
+                        not e[0].wouldInboundNodeCreateSink(e[1]) \
+                        and not e[1].wouldOutboundNodeCreateSource(e[0]) \
+                    ) \
+                    or \
+                    ( \
+                        not e[1].wouldInboundNodeCreateSink(e[0]) \
+                        and not e[0].wouldOutboundNodeCreateSource(e[1]) \
+                    )
+
+                edges.append({ 
+                    'data': { 
+                        'type': 'undirected' if isMarkable else 'unmarkable', 
+                        'source': int(e[0].id), 
+                        'target': int(e[1].id) 
+                    } 
+                })
         
         return edges
 

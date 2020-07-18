@@ -63,7 +63,7 @@ cytoscapeStylesheet = [
     {
         'selector': '[type ^= "directed"]',
         'style': {
-            'mid-target-arrow-color': 'red',
+            'mid-target-arrow-color': 'blue',
             'mid-target-arrow-shape': 'triangle',
             'arrow-scale': 2
         }
@@ -81,7 +81,15 @@ cytoscapeStylesheet = [
         'style': {
             'background-color': 'red'
         }
-    }
+    },
+    {
+        'selector': '[type ^= "unmarkable"]',
+        'style': {
+            'mid-target-arrow-color': 'red',
+            'mid-target-arrow-shape': 'tee',
+            'arrow-scale': 2
+        }
+    },
 ]
 
 def getGraph():
