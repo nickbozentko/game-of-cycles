@@ -17,17 +17,21 @@ def getMainMenuLayout():
         html.H1(
             [
                 'Select a Board',
-                html.Button(
-                    '+',
-                    style={
-                        'backgroundColor': 'blue',
-                        'color': 'white',
-                        'border': 'none',
-                        'height': '30px',
-                        'width': '30px',
-                        'margin-left': '80px'
-                    }
+                dcc.Link(
+                    html.Button(
+                        '+',
+                        style={
+                            'backgroundColor': 'blue',
+                            'color': 'white',
+                            'border': 'none',
+                            'height': '30px',
+                            'width': '30px',
+                            'margin-left': '80px'
+                        }
+                    ),
+                    href='/createBoard'
                 )
+ 
             ],
             id='mainMenu',
             style={
@@ -69,6 +73,11 @@ def getMainMenuLayout():
 
     return htmlEls
 
+def getBoardCreatorPage():
+    return html.Div([
+        html.H1('Create a Board')
+    ])
+
 # Root layout
 app.layout = html.Div([
         dcc.Location(id="url", refresh=False),
@@ -101,6 +110,11 @@ def displayPage(url):
             game.renderCurrentBoard(),
             id='game-page',
         )]
+    elif url == '/createBoard':
+        return [html.Div(
+            getBoardCreatorPage(),
+            id='board-creator-page'
+        )]
 
     return [html.Div(
         getMainMenuLayout(),
@@ -111,4 +125,4 @@ def displayPage(url):
 
 # Start dev server
 if __name__ == '__main__':
-    app.run_server(host='127.0.0.1', port=3000, debug=True)
+    app.run_server(host='0.0.0.0', port=3000, debug=True)

@@ -58,18 +58,21 @@ def renderCurrentBoard():
                         'margin': '20px'
                     }
                 ),
-                html.Button(
-                    'Main Menu',
-                    id='mainMenuBtn',
-                    n_clicks=0,
-                    style={
-                        'backgroundColor': 'blue',
-                        'color': 'white',
-                        'border': 'none',
-                        'height': '50px',
-                        'width': '150px',
-                        'margin': '20px'
-                    }
+                dcc.Link(
+                    html.Button(
+                        'Main Menu',
+                        id='mainMenuBtn',
+                        n_clicks=0,
+                        style={
+                            'backgroundColor': 'blue',
+                            'color': 'white',
+                            'border': 'none',
+                            'height': '50px',
+                            'width': '150px',
+                            'margin': '20px'
+                        }
+                    ),
+                    href='/'
                 ),
                 html.H3(
                     '',
@@ -219,13 +222,3 @@ def updateWinnerText(graphEls, playerMove):
         }, 
         {'display': 'none'}
     ]
-
-# Back to main menu
-@app.callback(
-    [Output('url', 'pathname')],
-    [Input('mainMenuBtn', 'n_clicks')]
-)
-def backToMainMenu(num):
-    if num == 0:
-        return no_update
-    return ['/']
